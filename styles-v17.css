@@ -1,0 +1,49 @@
+/* v1.7 portrait/gameplay corrections */
+#chartCanvas{image-rendering:auto;transform:translateZ(0)}
+#gameBrand{color:rgba(10,55,63,.92);text-shadow:0 1px rgba(255,255,255,.12)}
+@media (orientation:portrait){
+  #topHud{top:calc(var(--safe-top) + 4px)!important;left:7px!important;right:72px!important;min-height:72px!important;height:72px!important;padding-right:34px!important;border-radius:14px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,1fr)!important;overflow:hidden!important}
+  #topHud .metric{padding:3px 2px!important;min-height:35px!important;border-right:1px solid var(--line)!important}
+  #topHud .metric:nth-child(n+4){border-top:1px solid var(--line)!important}
+  #topHud .metric span{font-size:8px!important;letter-spacing:.1em!important}
+  #topHud .metric strong{font-size:12px!important;line-height:1.05!important}
+  #topHud .icon-btn{position:absolute!important;right:0!important;top:0!important;width:34px!important;height:100%!important;border-left:1px solid var(--line)!important;font-size:18px!important}
+  #statusStrip{top:calc(var(--safe-top) + 81px)!important;left:8px!important;right:73px!important;height:45px!important;border-radius:12px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #statusStrip>div{padding:4px 3px!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+  #statusStrip>div:nth-child(n+4){display:none!important}
+  #statusStrip span{font-size:8px!important}
+  #statusStrip b{font-size:11px!important;margin-top:2px!important}
+  #chartTools{top:calc(var(--safe-top) + 4px)!important;right:5px!important;width:62px!important;border-radius:15px!important}
+  #chartTools .tool-btn{height:45px!important;font-size:19px!important}
+  #chartTools .tool-btn.wide{font-size:11px!important;letter-spacing:.04em!important}
+  #chartTools .menu-tool{height:57px!important;font-size:11px!important}
+  #controls{left:6px!important;right:6px!important;bottom:calc(var(--safe-bottom) + 5px)!important;gap:5px!important}
+  #controls .control-card{padding:6px 7px!important;border-radius:13px!important}
+  #controls .control-title{margin-bottom:4px!important}
+  #controls .control-title span{font-size:9px!important}
+  #controls .control-title strong{font-size:13px!important}
+  #controls .rudder-hold-grid{gap:5px!important;grid-template-columns:1.25fr .55fr 1.25fr!important}
+  #controls .rudder-hold-grid button{min-height:45px!important;border-radius:10px!important}
+  #controls .rudder-hold-grid button span{font-size:13px!important}
+  #controls .rudder-hold-grid button b{font-size:7px!important;margin-top:2px!important}
+  #controls .range-wrap{margin-top:4px!important;font-size:10px!important;gap:5px!important}
+  #controls .range-wrap input{height:16px!important}
+  #controls .telegraph-grid{gap:4px!important}
+  #controls .telegraph-grid button{min-height:38px!important;border-radius:9px!important;font-size:8px!important;line-height:1!important;padding:2px!important}
+  #gameBrand{left:11px!important;bottom:calc(var(--safe-bottom) + 225px)!important;font-size:10px!important;letter-spacing:.04em!important}
+}
+@media (orientation:portrait) and (max-width:390px){
+  #topHud{right:67px!important}
+  #statusStrip{right:68px!important}
+  #chartTools{width:57px!important}
+  #controls .rudder-hold-grid button span{font-size:12px!important}
+  #controls .telegraph-grid button{font-size:7px!important}
+}
+@media (orientation:landscape) and (max-height:650px){
+  #topHud{min-height:48px!important;height:48px!important}
+  #statusStrip{top:calc(var(--safe-top) + 56px)!important;height:42px!important}
+  #controls{grid-template-columns:1fr 1.18fr!important;gap:5px!important}
+  #controls .control-card{padding:6px!important}
+  #controls .rudder-hold-grid button{min-height:39px!important}
+  #controls .telegraph-grid button{min-height:34px!important}
+}
