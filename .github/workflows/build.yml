@@ -3,7 +3,12 @@ name: Validate and package simulator
 on:
   push:
     branches: [main, ecdis-v1.5-master]
+    paths-ignore:
+      - "release/**"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   validate-package:
@@ -20,9 +25,26 @@ jobs:
           grep -q 'deriveShipPhysics' app.js
           grep -q 'squatFor' app.js
       - name: Package deployable ZIP
-        run: zip -9 E-P-Maneuver-Simulator-v1.5.zip index.html styles.css app.js config.js sw.js manifest.webmanifest icon.svg netlify.toml README.md
+        shell: bash
+        run: |
+          mkdir -p release
+          if [ "${GITHUB_REF_NAME}" = "ecdis-v1.5-master" ]; then
+            ZIP_NAME="E-P-Maneuver-Simulator-v1.5-MASTER.zip"
+          else
+            ZIP_NAME="E-P-Maneuver-Simulator-v1.5.zip"
+          fi
+          rm -f "release/${ZIP_NAME}"
+          zip -9 "release/${ZIP_NAME}" index.html styles.css app.js config.js sw.js manifest.webmanifest icon.svg netlify.toml README.md
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
       - uses: actions/upload-artifact@v4
         with:
           name: E-P-Maneuver-Simulator-${{ github.ref_name }}
-          path: E-P-Maneuver-Simulator-v1.5.zip
+          path: release/${{ env.ZIP_NAME }}
           if-no-files-found: error
+      - name: Publish ZIP to branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add release/
+          git diff --cached --quiet || git commit -m "Build deployable ZIP [skip ci]"
+          git push
