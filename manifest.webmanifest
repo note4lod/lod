@@ -1,0 +1,19 @@
+{
+  "name": "E&P Maneuver Simulator",
+  "short_name": "E&P Maneuver",
+  "description": "Mobil ECDIS tarzı gemi manevra eğitim simülatörü",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#06161b",
+  "theme_color": "#07181d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
