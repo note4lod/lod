@@ -9,6 +9,7 @@ Mobil tarayıcıda çalışan, eğitim ve oyun amaçlı ECDIS tarzı gemi manevr
 - Level 1 öncesi adım adım Tanıtım bölümü
 - Mobil dik/yatay ekran düzeni
 - PWA ve çevrimdışı çalışma
+- MASTER test paketi: tüm leveller açık
 
 > Gerçek seyir veya köprüüstü kararlarında kullanılamaz.
 
