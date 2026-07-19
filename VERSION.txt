@@ -1,0 +1,2 @@
+E&P Maneuver Simulator v1.6 MASTER
+Realistic contour chart and compact portrait HUD.
