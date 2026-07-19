@@ -5,6 +5,8 @@ on:
     branches: [ecdis-v1.7-master]
     paths-ignore:
       - "release/**"
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -36,6 +38,7 @@ jobs:
           path: release/E-P-Maneuver-Simulator-v1.7-MASTER.zip
           if-no-files-found: error
       - name: Publish ZIP to branch
+        if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
