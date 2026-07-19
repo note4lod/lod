@@ -10,6 +10,7 @@ Mobil tarayıcıda çalışan, eğitim ve oyun amaçlı ECDIS tarzı gemi manevr
 - Mobil dik/yatay ekran düzeni
 - PWA ve çevrimdışı çalışma
 - MASTER test paketi: tüm leveller açık
+- v1.6 gerçekçi harita ve kompakt portre arayüzü için yeniden paketleme
 
 > Gerçek seyir veya köprüüstü kararlarında kullanılamaz.
 
