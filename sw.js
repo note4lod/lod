@@ -1,4 +1,4 @@
-const CACHE_NAME = "ep-maneuver-v1.5-master";
+const CACHE_NAME = "ep-maneuver-v1.6-master";
 const ASSETS = ["./", "index.html", "styles.css", "app.js", "config.js", "manifest.webmanifest", "icon.svg"];
 
 self.addEventListener("install", (event) => {
