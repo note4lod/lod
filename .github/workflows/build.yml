@@ -1,0 +1,28 @@
+name: Validate and package simulator
+
+on:
+  push:
+    branches: [main, ecdis-v1.5-master]
+  workflow_dispatch:
+
+jobs:
+  validate-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax check
+        run: node --check app.js && node --check config.js && node --check sw.js
+      - name: Required UI checks
+        run: |
+          grep -q 'shipLengthInput' index.html
+          grep -q 'shipUkcInput' index.html
+          grep -q 'Tanıtım' index.html
+          grep -q 'deriveShipPhysics' app.js
+          grep -q 'squatFor' app.js
+      - name: Package deployable ZIP
+        run: zip -9 E-P-Maneuver-Simulator-v1.5.zip index.html styles.css app.js config.js sw.js manifest.webmanifest icon.svg netlify.toml README.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: E-P-Maneuver-Simulator-${{ github.ref_name }}
+          path: E-P-Maneuver-Simulator-v1.5.zip
+          if-no-files-found: error
