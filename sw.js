@@ -1,5 +1,5 @@
-const CACHE_NAME = "ep-maneuver-v1.6-master";
-const ASSETS = ["./", "index.html", "styles.css", "app.js", "config.js", "manifest.webmanifest", "icon.svg"];
+const CACHE_NAME = "ep-maneuver-v1.7-master";
+const ASSETS = ["./", "index.html", "styles.css", "styles-v17.css", "app-v17.js", "config.js", "manifest.webmanifest", "icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
