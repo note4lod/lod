@@ -15,25 +15,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Apply v1.6 visual patch
+        run: python3 scripts/apply_v16_patch.py
       - name: JavaScript syntax check
         run: node --check app.js && node --check config.js && node --check sw.js
-      - name: Required UI checks
+      - name: Required UI and chart checks
         run: |
           grep -q 'shipLengthInput' index.html
           grep -q 'shipUkcInput' index.html
           grep -q 'Tanıtım' index.html
           grep -q 'deriveShipPhysics' app.js
-          grep -q 'squatFor' app.js
+          grep -q 'paintBand' app.js
+          grep -q 'COMPACT PORTRAIT' styles.css
       - name: Package deployable ZIP
         shell: bash
         run: |
           mkdir -p release
           if [ "${GITHUB_REF_NAME}" = "ecdis-v1.5-master" ]; then
-            ZIP_NAME="E-P-Maneuver-Simulator-v1.5-MASTER.zip"
+            ZIP_NAME="E-P-Maneuver-Simulator-v1.6-MASTER.zip"
           else
-            ZIP_NAME="E-P-Maneuver-Simulator-v1.5.zip"
+            ZIP_NAME="E-P-Maneuver-Simulator-v1.6.zip"
           fi
-          rm -f "release/${ZIP_NAME}"
+          rm -f release/E-P-Maneuver-Simulator-v1.5*.zip "release/${ZIP_NAME}"
           zip -9 "release/${ZIP_NAME}" index.html styles.css app.js config.js sw.js manifest.webmanifest icon.svg netlify.toml README.md
           echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
       - uses: actions/upload-artifact@v4
@@ -41,10 +44,10 @@ jobs:
           name: E-P-Maneuver-Simulator-${{ github.ref_name }}
           path: release/${{ env.ZIP_NAME }}
           if-no-files-found: error
-      - name: Publish ZIP to branch
+      - name: Publish patched source and ZIP to branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add release/
-          git diff --cached --quiet || git commit -m "Build deployable ZIP [skip ci]"
+          git add app.js styles.css index.html config.js sw.js README.md release/
+          git diff --cached --quiet || git commit -m "Build E&P Maneuver Simulator v1.6 [skip ci]"
           git push
