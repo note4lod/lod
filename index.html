@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#07181d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="E&P Maneuver" />
+  <meta name="description" content="Mobil ECDIS tarzı gemi manevra simülatörü." />
+  <meta name="app-version" content="1.5.0" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>E&P Maneuver Simulator</title>
+</head>
+<body>
+  <div id="app">
+    <canvas id="chartCanvas" aria-label="ECDIS tarzı gemi manevra haritası"></canvas>
+
+    <header id="topHud" class="hud-panel hidden" aria-live="polite">
+      <div class="metric"><span>HDG</span><strong id="hdgValue">000.0°</strong></div>
+      <div class="metric"><span>COG</span><strong id="cogValue">000.0°</strong></div>
+      <div class="metric"><span>SOG</span><strong id="sogValue">0.0 kn</strong></div>
+      <div class="metric"><span>ROT</span><strong id="rotValue">0.0°/dk</strong></div>
+      <div class="metric"><span>DERİNLİK</span><strong id="depthValue">--.- m</strong></div>
+      <div class="metric"><span>UKC</span><strong id="ukcValue">--.- m</strong></div>
+      <button id="pauseButton" class="icon-btn" aria-label="Duraklat">Ⅱ</button>
+    </header>
+
+    <section id="statusStrip" class="hud-panel hidden">
+      <div><span>LEVEL</span><b id="levelLabel">1</b></div>
+      <div><span>RÜZGÂR</span><b id="windLabel">Sakin</b></div>
+      <div><span>AKINTI</span><b id="currentLabel">Yok</b></div>
+      <div><span>DÜMEN</span><b id="rudderLabel">0°</b></div>
+      <div><span>MAKİNE</span><b id="engineLabel">STOP</b></div>
+      <div><span>HEDEF</span><b id="goalLabel">-- m</b></div>
+    </section>
+
+    <aside id="chartTools" class="hud-panel hidden">
+      <button id="zoomIn" class="tool-btn" aria-label="Yakınlaştır">+</button>
+      <button id="zoomOut" class="tool-btn" aria-label="Uzaklaştır">−</button>
+      <button id="centerShip" class="tool-btn" aria-label="Gemiyi ortala">⌖</button>
+      <button id="orientationToggle" class="tool-btn wide">N-UP</button>
+      <button id="predictionToggle" class="tool-btn wide active">PRED</button>
+      <button id="gameMenuButton" class="tool-btn wide menu-tool">ANA<br>MENÜ</button>
+    </aside>
+
+    <div id="gameBrand" class="hidden">E&amp;P Maneuver Simulator</div>
+
+    <section id="controls" class="hidden">
+      <div class="control-card rudder-card" id="rudderCard">
+        <div class="control-title"><span>DÜMEN</span><strong id="rudderCommandReadout">ORTA 0°</strong></div>
+        <div class="rudder-hold-grid">
+          <button id="portRudderButton" class="rudder-hold port" data-rudder-step="-1"><span>◀ İSKELE</span><b>1° AZALT · BASILI TUT</b></button>
+          <button id="midshipsButton" class="midships active" data-rudder="0"><span>ORTA</span><b>0°</b></button>
+          <button id="starboardRudderButton" class="rudder-hold starboard" data-rudder-step="1"><span>SANCAK ▶</span><b>1° ARTIR · BASILI TUT</b></button>
+        </div>
+        <label class="range-wrap"><span>İskele</span><input id="rudderSlider" type="range" min="-35" max="35" step="1" value="0" /><span>Sancak</span></label>
+      </div>
+
+      <div class="control-card engine-card" id="engineCard">
+        <div class="control-title"><span>MAKİNE TELGRAFI</span><strong id="engineCommandReadout">STOP</strong></div>
+        <div class="telegraph-grid">
+          <button data-engine="-1" class="astern">TAM<br>TORNİSTAN</button>
+          <button data-engine="-0.55" class="astern">YARIM<br>TORNİSTAN</button>
+          <button data-engine="-0.25" class="astern">PEK AĞIR<br>TORNİSTAN</button>
+          <button data-engine="0" class="stop active">STOP</button>
+          <button data-engine="0.22" class="ahead">PEK AĞIR<br>İLERİ</button>
+          <button data-engine="0.45" class="ahead">AĞIR<br>İLERİ</button>
+          <button data-engine="0.7" class="ahead">YARIM<br>İLERİ</button>
+          <button data-engine="1" class="ahead">TAM<br>İLERİ</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="startScreen" class="screen-overlay visible">
+      <div class="modal start-modal">
+        <div class="brand-row">
+          <div class="radar-logo" aria-hidden="true"><span></span></div>
+          <div><p class="eyebrow">MOBİL DENİZCİLİK EĞİTİMİ</p><h1>E&amp;P Maneuver<br />Simulator</h1></div>
+        </div>
+        <p class="lead">Kendi gemi ölçülerinizi girin. Simülatör dönüş, hızlanma, sığ su, rüzgâr, akıntı ve UKC davranışını bu değerlere göre hesaplasın.</p>
+
+        <section class="ship-config" aria-labelledby="shipConfigTitle">
+          <div class="section-heading"><div><p class="eyebrow">GEMİ AYARLARI</p><h2 id="shipConfigTitle">Gemi Özellikleri</h2></div><button id="resetShipButton" class="small-btn">VARSAYILAN</button></div>
+          <div class="input-grid">
+            <label><span>Gemi boyu (m)</span><input id="shipLengthInput" type="number" min="40" max="400" step="1" value="150" /></label>
+            <label><span>Gemi eni (m)</span><input id="shipBeamInput" type="number" min="7" max="70" step="0.5" value="24" /></label>
+            <label><span>Azami sürat (kn)</span><input id="shipSpeedInput" type="number" min="4" max="32" step="0.5" value="14" /></label>
+            <label><span>Draft (m)</span><input id="shipDraftInput" type="number" min="1.5" max="20" step="0.1" value="7.5" /></label>
+            <label class="ukc-input"><span>Minimum UKC (m) <button id="ukcInfoButton" type="button" class="info-dot" aria-label="Minimum UKC açıklaması">?</button></span><input id="shipUkcInput" type="number" min="0.3" max="5" step="0.1" value="1.0" /></label>
+          </div>
+          <p id="ukcHelp" class="help-text hidden"><b>UKC (Under Keel Clearance)</b>, geminin omurgası ile deniz tabanı arasında kalması gereken emniyetli mesafedir. Simülatörde kullanılabilir UKC; derinlikten draft ve squat çıkarılarak hesaplanır.</p>
+          <div class="derived-grid">
+            <div><span>Tahmini deplasman</span><b id="displacementPreview">-- t</b></div>
+            <div><span>Tam yol dönüş çapı</span><b id="turnPreview">-- m</b></div>
+            <div><span>Tam yol durma mesafesi</span><b id="stopPreview">-- m</b></div>
+            <div><span>Emniyetli min. derinlik</span><b id="safeDepthPreview">-- m</b></div>
+          </div>
+          <div id="shipValidation" class="validation-message" aria-live="polite"></div>
+        </section>
+
+        <div id="masterBadge" class="master-badge hidden">MASTER TEST · TÜM LEVELLER AÇIK</div>
+
+        <div class="level-heading"><div><p class="eyebrow">EĞİTİM VE GÖREVLER</p><h2>Bölüm Seç</h2></div><small id="progressText">Level 1 açık</small></div>
+        <div id="levelGrid" class="level-grid"></div>
+
+        <div class="start-actions">
+          <button id="tutorialButton" class="tutorial-btn">TANITIMI BAŞLAT</button>
+          <button id="startButton" class="primary-btn">LEVEL 1'E BAŞLA</button>
+          <button id="installButton" class="secondary-btn hidden">TELEFONA YÜKLE</button>
+        </div>
+        <p class="orientation-note">Dik ve yatay ekranda çalışır. Daha geniş manevra alanı için yatay kullanım önerilir.</p>
+        <p class="disclaimer">Yalnızca oyun ve eğitim içindir. Gerçek seyir, ECDIS veya köprüüstü kararlarında kullanılamaz.</p>
+        <p class="producer-credit">Yapımcı: <strong>Engin PINAR</strong></p>
+      </div>
+    </section>
+
+    <section id="tutorialOverlay" class="screen-overlay hidden" role="dialog" aria-modal="true">
+      <div class="modal tutorial-modal">
+        <div class="tutorial-progress"><span id="tutorialStepLabel">1 / 8</span><div><i id="tutorialProgressBar"></i></div></div>
+        <p class="eyebrow">TANITIM</p>
+        <h2 id="tutorialTitle">Köprüüstüne Hoş Geldiniz</h2>
+        <p id="tutorialText"></p>
+        <div id="tutorialVisual" class="tutorial-visual"></div>
+        <div id="tutorialActionHint" class="tutorial-action-hint hidden"></div>
+        <div class="tutorial-actions">
+          <button id="tutorialBackButton" class="secondary-btn">GERİ</button>
+          <button id="tutorialSkipButton" class="secondary-btn">ATLA</button>
+          <button id="tutorialNextButton" class="primary-btn">İLERİ</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="messageModal" class="screen-overlay hidden" role="dialog" aria-modal="true">
+      <div class="modal result-modal">
+        <p id="resultEyebrow" class="eyebrow">MANEVRA SONUCU</p>
+        <h2 id="resultTitle">Game Over</h2>
+        <p id="resultMessage"></p>
+        <div id="resultStats" class="result-stats"></div>
+        <div class="result-actions">
+          <button id="restartButton" class="primary-btn">AYNI LEVELİ TEKRARLA</button>
+          <button id="nextLevelButton" class="primary-btn hidden">SONRAKİ LEVEL</button>
+          <button id="menuButton" class="secondary-btn">ANA MENÜ</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
