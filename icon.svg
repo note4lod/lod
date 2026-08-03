@@ -1,9 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#07181d"/>
-  <circle cx="256" cy="256" r="184" fill="none" stroke="#79e8df" stroke-width="18"/>
-  <circle cx="256" cy="256" r="118" fill="none" stroke="#355a60" stroke-width="8"/>
-  <path d="M256 72v368M72 256h368" stroke="#355a60" stroke-width="7"/>
-  <path d="M256 112l58 184-58 104-58-104z" fill="#69df91" stroke="#e8f5f4" stroke-width="10"/>
-  <path d="M256 256L390 154" stroke="#ffd25d" stroke-width="14" stroke-linecap="round"/>
-  <text x="256" y="472" text-anchor="middle" fill="#e8f5f4" font-size="42" font-family="Arial, sans-serif" font-weight="700">E&amp;P</text>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="65%">
+      <stop offset="0" stop-color="#143941"/>
+      <stop offset="1" stop-color="#07181d"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="#79e8df" stroke-width="16"/>
+  <circle cx="256" cy="256" r="116" fill="none" stroke="#31575e" stroke-width="7"/>
+  <circle cx="256" cy="256" r="61" fill="none" stroke="#31575e" stroke-width="7"/>
+  <path d="M256 86v340M86 256h340" stroke="#4e858a" stroke-width="6"/>
+  <path d="M256 256L360 153A146 146 0 0 1 395 256Z" fill="#69df91" opacity=".14"/>
+  <circle cx="356" cy="154" r="18" fill="#5ee889" filter="url(#glow)"/>
 </svg>
