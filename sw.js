@@ -1,5 +1,16 @@
-const CACHE_NAME = "ep-maneuver-v1.5-normal";
-const ASSETS = ["./", "index.html", "styles.css", "app.js", "config.js", "manifest.webmanifest", "icon.svg"];
+const CACHE_NAME = "mariner-academy-v1.6-toolbox";
+const ASSETS = [
+  "./",
+  "index.html",
+  "styles.css",
+  "app.js",
+  "config.js",
+  "manifest.webmanifest",
+  "icon.svg",
+  "toolbox.html",
+  "toolbox.css",
+  "toolbox.js"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
