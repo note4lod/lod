@@ -1,7 +1,7 @@
 {
-  "name": "E&P Maneuver Simulator",
-  "short_name": "E&P Maneuver",
-  "description": "Mobil ECDIS tarzı gemi manevra eğitim simülatörü",
+  "name": "Mariner Academy",
+  "short_name": "Mariner Academy",
+  "description": "Denizcilik eğitim simülatörü ve profesyonel seyir toolbox uygulaması",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
